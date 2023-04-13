@@ -6,26 +6,33 @@ PORT = 1025
 # Creamos el socket para la conexión UDP
 socketCliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-# Establecemos conexión con el servidor
+# Conectamos el socket al servidor
 socketCliente.connect((HOST, PORT))
 
-# Enviamos al servidor el nombre del archivo PDF que queremos obtener
+# Enviamos al servidor el nombre del archivo PDF que queremos enviar
 socketCliente.send("archivo.pdf".encode("utf-8"))
+print("Petición enviada.")
 
-# Recibimos el mensaje de confirmación de petición
-print(socketCliente.recv(1024).decode("utf-8"))
+# Recibimos el mensaje de confirmación/rechazo de petición
+estado = socketCliente.recv(1024).decode("utf-8")
+print(estado)
+if estado == "Petición confirmada.":
 
-# Recibimos el archivo PDF del servidor
-archivo = socketCliente.recv(1024)
+    # Abrimos el archivo PDF en binario
+    archivo = open("archivo.pdf", "rb")
 
-# Creamos el archivo PDF
-archivoPDF = open("archivoRecibido.pdf", "wb")
+    # Enviamos el archivo PDF al servidor en binario
+    socketCliente.send(archivo.read())
 
-# Escribimos el archivo PDF
-archivoPDF.write(archivo)
+    # Cerramos el archivo
+    archivo.close()
 
-# Cerramos el archivo
-archivoPDF.close()
+    # Recibimos el mensaje de confirmación de recepción
+    if socketCliente.recv(1024).decode("utf-8") == "Archivo recibido.":
+        print("Archivo enviado correctamente.")
+        # Eliminamos el archivo PDF
+        import os
+        os.remove("archivo.pdf")
 
 # Cerramos el socket
 socketCliente.close()
