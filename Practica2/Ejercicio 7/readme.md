@@ -1,3 +1,0 @@
-# Ejercicio 7
-## FTP simple. Escribir un programa cliente/servidor en el que el servidor recibe por socket el nombre de un fichero y se lo envía al cliente. 
-## El programa se puede mejorar, por ejemplo, enviando comandos como “listar”, que listará los ficheros disponibles; enviando mensajes de error cuando no exista el fichero, permitiendo que el cliente también pueda subir sus propios ficheros, etc.
