@@ -3,28 +3,27 @@ import socket
 HOST = 'localhost'
 PORT = 1025
 
-# Creamos el socket
-socketCliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+socketCliente = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-# Conectamos el socket
-socketCliente.connect((HOST, PORT))
+socketCliente.sendto(''.encode('utf-8'), (HOST, PORT))
 
-# Imprimimos el mensaje de bienvenida
-print("Server says: " + socketCliente.recv(1024).decode("utf-8"))
+respuesta = socketCliente.recv(1024).decode('utf-8')
+print(f'Server says: {respuesta}')
 
-# Enviamos el mensaje
-socketCliente.send(input().encode("utf-8"))
+socketCliente.sendto(input('Introduzca su nombre: ').encode('utf-8'), (HOST, PORT))
 
-consulta = ""
+respuesta = socketCliente.recv(1024).decode('utf-8')
+print(f'Server says: {respuesta}')
 
-# Imprimimos el mensaje
-while consulta != "exit":
-    print("Server says: " + socketCliente.recv(1024).decode("utf-8"))
-    consulta = input()
-    socketCliente.send(consulta.encode("utf-8"))
+consulta = ''
+while consulta != 'exit':
+    consulta = input("Introduzca una nueva consulta: ")
+    socketCliente.sendto(consulta.encode('utf-8'), (HOST, PORT))
 
-# Imprimimos el mensaje de despedida
-print("Server says: " + socketCliente.recv(1024).decode("utf-8"))
+    respuesta = socketCliente.recv(1024).decode('utf-8')
+    print(f'Server says: {respuesta}')
 
-# Cerramos el socket
+    respuesta = socketCliente.recv(1024).decode('utf-8')
+    print(f'Server says: {respuesta}')
+
 socketCliente.close()

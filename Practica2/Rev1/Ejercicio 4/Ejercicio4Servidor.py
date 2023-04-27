@@ -3,39 +3,34 @@ import socket
 HOST = 'localhost'
 PORT = 1025
 
-# Creamos el socket
-socketServidor = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+socketServidor = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-# Enlazamos el socket
 socketServidor.bind((HOST, PORT))
 
-print("Server running!")
+print('Server up!')
 
-# Ponemos el servidor a la escucha de peticiones de, como máximo, 1 cliente
-socketServidor.listen(1)
+mensaje, direccionCliente = socketServidor.recvfrom(1024)
 
-# Aceptamos la conexión y creamos un nuevo socket para comunicarnos con el cliente
-socketCliente, direccionCliente = socketServidor.accept()
-print("Conexión entrante de " + str(direccionCliente))
+print(f'Conexión entrante desde el cliente {str(direccionCliente)}')
 
-# Enviamos el mensaje
-socketCliente.send("¡Bienvenido! ¿Cuál es su nombre para que pueda dirigirme a usted?".encode("utf-8"))
+socketServidor.sendto('¡Bienvenido! ¿Cuál es su nombre para que pueda dirigirme a usted?'.encode('utf-8'), direccionCliente)
 
-# Recibimos el mensaje
-nombre = socketCliente.recv(1024).decode("utf-8")
+nombreCliente = socketServidor.recv(1024).decode('utf-8')
 
-# Enviamos el mensaje
-socketCliente.send(("¡Hola " + nombre + "! ¿En qué puedo ayudarte?").encode("utf-8"))
+consulta = ''
 
-# Enviamos la misma respuesta hasta que el cliente introduzca "exit"
-while socketCliente.recv(1024).decode("utf-8") != "exit":
-    socketCliente.send("Debe ponerse en contacto con el servicio de atención de dudas cuya dirección es dudas@ejemplo.com".encode("utf-8"))
+while consulta != 'exit':
+    socketServidor.sendto(f'{nombreCliente}, ¿en qué puedo ayudarte?'.encode('utf-8'), direccionCliente)
 
-# Enviamos el mensaje de despedida
-socketCliente.send("¡Hasta pronto!".encode("utf-8"))
+    consulta = socketServidor.recv(1024).decode('utf-8')
 
-# Cerramos el socket
-socketCliente.close()
+    if consulta == 'exit':
+        socketServidor.sendto('¡Adiós!'.encode('utf-8'), direccionCliente)
+    else:
+        socketServidor.sendto('Debe ponerse en contacto con el servicio de atención de dudas cuya dirección es '
+                              'dudas@ejemplo.com'.encode('utf-8'), direccionCliente)
+
+
 socketServidor.close()
+print('Server down!')
 
-print("Server closed!")

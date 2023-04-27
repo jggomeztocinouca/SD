@@ -9,7 +9,7 @@ socketCliente = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 nombreArchivo = input("Introduzca el nombre del fichero a enviar: ")
 
 while not os.path.isfile(nombreArchivo) or type(nombreArchivo) is not str:
-    nombreArchivo= input('El archivo no existe. Introduzca un nombre válido: ')
+    nombreArchivo = input('El archivo no existe. Introduzca un nombre válido: ')
 
 socketCliente.sendto(nombreArchivo.encode('utf-8'), (HOST, PORT))
 

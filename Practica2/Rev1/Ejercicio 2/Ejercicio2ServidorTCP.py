@@ -14,9 +14,7 @@ socketServidor.listen(1)
 
 socketCliente, direccionCliente = socketServidor.accept()
 
-nombreFichero = socketCliente.recv(1024)
-
-nombreFichero = nombreFichero.decode('utf-8')
+nombreFichero = socketCliente.recv(1024).decode('utf-8')
 
 solicitudAprobada = True
 
@@ -30,13 +28,12 @@ else:
     socketCliente.send('ok'.encode('utf-8'))
 
 if solicitudAprobada:
-    size = int(socketServidor.recv(1024).decode('utf-8'))
+    size = int(socketCliente.recv(1024).decode('utf-8'))
     with open('copia_' + nombreFichero, 'wb') as fichero:
-        while size > 0:
-            datos = socketServidor.recv(4096)
+        datos = socketCliente.recv(4096)
+        while datos:
             fichero.write(datos)
-            size -= len(datos)
-    socketServidor.send('Archivo recibido'.encode('utf-8'))
+            datos = socketCliente.recv(4096)
 
 socketCliente.close()
 socketServidor.close()

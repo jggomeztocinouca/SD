@@ -3,27 +3,25 @@ import socket
 HOST = 'localhost'
 PORT = 1025
 
-# Creamos el socket para establecer conexión TCP
 socketCliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-# Establecemos conexión con el servidor
 socketCliente.connect((HOST, PORT))
-print("Conexión establecida con el servidor")
 
-# Enviamos el nombre del fichero .jpg al servidor
-socketCliente.send("imagen.jpg".encode("utf-8"))
+nombreImagen = input('Introduzca el nombre de la imagen a descargar: ')
 
-# Comprobamos si la imagen existe
-if socketCliente.recv(1024).decode("utf-8") == "Imagen encontrada":
-    print("Iniciando descarga de la imagen")
-    # Recibimos la imagen
-    imagen = open("imagenRecibida.jpg", "wb")
-    imagen.write(socketCliente.recv(1024))
-    imagen.close()
-    print("Imagen recibida")
-else:
-    print("Imagen no existente en el servidor")
+socketCliente.send(nombreImagen.encode('utf-8'))
 
-# Cerramos el socket del cliente
+existe = False
+
+if socketCliente.recv(1024).decode('utf-8') == 'existe':
+    existe = True
+
+if existe:
+    with open('descargada_' + nombreImagen, 'wb') as imagen:
+        datos = socketCliente.recv(4096)
+        while datos:
+            imagen.write(datos)
+            datos = socketCliente.recv(4096)
+    print('Imagen recibida')
+
 socketCliente.close()
-

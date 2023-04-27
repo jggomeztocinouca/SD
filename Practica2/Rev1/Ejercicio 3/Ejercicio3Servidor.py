@@ -3,49 +3,37 @@ import socket
 HOST = 'localhost'
 PORT = 1025
 
-# Creamos el socket para establecer una conexión TCP
-socketServidor = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+socketServidor = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-# Enlazamos el socket a la dirección y puerto del host
 socketServidor.bind((HOST, PORT))
 
-print("Server running!")
+print('Server up!')
 
-# Ponemos al servidor a la escucha de peticiones de, como máximo, 1 cliente
-socketServidor.listen(1)
+mensaje, direccionCliente = socketServidor.recvfrom(1024)
 
-# Aceptamos la conexión y creamos un nuevo socket para el cliente aceptado
-socketCliente, direccionCliente = socketServidor.accept()
+print(f'Conexión entrante desde el cliente {str(direccionCliente)}')
 
-# Impresión de información del cliente
-print("Petición de conexión recibida de: " + str(direccionCliente))
+mensaje = mensaje.decode('utf-8')
 
-# Recibimos el fichero a invertir
-archivo = socketCliente.recv(1024)
+cadenaInvertida = socketServidor.recv(4096).decode('utf-8')
 
-# Enviamos confirmación de que el archivo fue recibido correctamente
-print("Archivo recibido: " + archivo.decode("utf-8"))
-socketCliente.sendall("Archivo recibido.".encode("utf-8"))
+print('Archivo recibido')
 
-# Invertimos el contenido del fichero
-archivo = archivo[::-1] # Recorrido inverso
+print(f'Cadena original: {cadenaInvertida}')
 
-# Calculamos el tamaño del fichero
-size = str(len(archivo))
+cadenaInvertida = cadenaInvertida[::-1]
 
-# Enviamos el tamaño del fichero y luego el archivo invertido
-socketCliente.sendall(size.encode("utf-8"))
-if socketCliente.recv(1024).decode("utf-8") == "Tamaño recibido.":
-    socketCliente.sendall(archivo)
-    print("Enviado archivo invertido: " + archivo.decode("utf-8"))
-    print("Tamaño: " + size + " bytes")
-else:
-    print("Error en el envío del archivo.")
+print(f'Cadena invertida: {cadenaInvertida}')
 
-# Cerramos el socket del cliente
-socketCliente.close()
+socketServidor.sendto(str(len(cadenaInvertida)).encode('utf-8'), direccionCliente)
 
-# Cerramos el socket del servidor
+socketServidor.sendto(cadenaInvertida.encode('utf-8'), direccionCliente)
+
+print('Tamaño y cadena invertida enviados')
+
 socketServidor.close()
 
-print("Server closed!")
+print('Server down!')
+
+
+

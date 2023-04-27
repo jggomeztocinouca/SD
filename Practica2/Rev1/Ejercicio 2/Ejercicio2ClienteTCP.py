@@ -4,14 +4,14 @@ import os
 HOST = 'localhost'
 PORT = 1025
 
-socketCliente = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+socketCliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 socketCliente.connect((HOST, PORT))
 
 nombreArchivo = input("Introduzca el nombre del fichero a enviar: ")
 
 while not os.path.isfile(nombreArchivo) or type(nombreArchivo) is not str:
-    nombreArchivo= input('El archivo no existe. Introduzca un nombre válido: ')
+    nombreArchivo = input('El archivo no existe. Introduzca un nombre válido: ')
 
 socketCliente.send(nombreArchivo.encode('utf-8'))
 
@@ -29,7 +29,4 @@ if respuesta != 'ok':
 if enviarArchivo:
     socketCliente.send(str(os.path.getsize(nombreArchivo)).encode('utf-8'))
     with open(nombreArchivo, 'rb') as fichero:
-        chunk = fichero.read(4096)
-        while chunk:
-            socketCliente.send(chunk)
-            chunk = fichero.read(4096)
+        socketCliente.sendall(fichero.read())

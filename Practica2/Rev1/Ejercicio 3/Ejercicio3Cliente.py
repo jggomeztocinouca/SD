@@ -1,44 +1,30 @@
 import socket
+import os
 
 HOST = 'localhost'
 PORT = 1025
 
-# Pedimos al usuario que introduzca el nombre del archivo y comprobamos que existe
-existe = False
-while(not existe):
-    print("Introduzca el archivo que desea enviar (junto a la extensión de fichero)")
-    nombreArchivo = input()
-    try:
-        archivo = open(nombreArchivo,"rb")
-        archivo.close()
-        existe = True
-    except IOError:
-        print("El archivo indicado no existe.")
+socketCliente = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-# Creamos el socket para establecer una conexión TCP
-socketCliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+nombreArchivo = input('Introduzca el nombre del archivo a enviar para su inversión: ')
 
-# Conectamos el socket al servidor
-socketCliente.connect((HOST,PORT))
+while not os.path.isfile(nombreArchivo):
+    nombreArchivo = input('El archivo no existe. Introduzca el nombre del archivo a enviar para su inversión: ')
 
-# Enviamos el fichero
-archivo = open(nombreArchivo,"rb")
-socketCliente.sendall(archivo.read())
+socketCliente.sendto(nombreArchivo.encode('utf-8'), (HOST, PORT))
 
-# Recibimos confirmación de que el archivo fue recibido correctamente
-if socketCliente.recv(1024).decode("utf-8") == "Archivo recibido.":
-    print("Archivo enviado.")
-else:
-    print("Error en el envío del archivo.")
+with open(nombreArchivo, 'r') as archivo:
+    socketCliente.sendto(archivo.read().encode('utf-8'), (HOST, PORT))
 
-archivo.close()
+print('Archivo enviado.')
 
-# Recibimos el archivo invertido y lo guardamos en texto plano
-archivoInvertido = open("inverted" + nombreArchivo, "wb")
-size = int(socketCliente.recv(1024).decode("utf-8"))
-socketCliente.send("Tamaño recibido.".encode("utf-8"))
-contenido = socketCliente.recv(size)
-archivoInvertido.write(contenido)
-print("Recibido archivo invertido: " + contenido.decode("utf-8"))
-print("Tamaño: " + str(size) + " bytes")
-archivoInvertido.close()
+size = int(socketCliente.recv(1024).decode('utf-8'))
+
+with open('inverted_' + nombreArchivo, 'w') as archivo:
+    contenido = socketCliente.recv(size).decode('utf-8')
+    archivo.write(contenido)
+
+print('Archivo recibido!')
+print(f'Contenido invertido: {contenido}. Tamaño: {size} bytes')
+
+socketCliente.close()
