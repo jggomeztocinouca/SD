@@ -9,7 +9,7 @@ def dict_add(mydict, t):
 
 
 if __name__ == 'main':
-    # La invocación dict_add({1: 'manzana'}, {2, 'fresa'})} deberá devolver como resultado {1: 'manzana', 2: 'fresa'}.
+    # La invocacion dict_add({1: 'manzana'}, {2, 'fresa'})} debera devolver como resultado {1: 'manzana', 2: 'fresa'}.
     mydict = {1: 'manzana'}
     t = (2, 'fresa')
     print(dict_add(mydict, t))

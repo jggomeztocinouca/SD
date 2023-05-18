@@ -11,4 +11,4 @@ for rutaDirectorio, nombreDirectorios, nombresArchivo in os.walk('.'):
         totalSize += size
         print(f'{archivo}: {size} bytes.')
 
-print(f'El tamaño total de los ficheros es de {totalSize} bytes')
+print(f'El size total de los ficheros es de {totalSize} bytes')

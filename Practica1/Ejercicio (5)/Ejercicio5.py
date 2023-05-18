@@ -1,6 +1,6 @@
 def list_add(mylist, e):
     if e is None:
-        raise TypeError("No se puede añadir un elemento nulo")
+        raise TypeError("No se puede introducir un elemento nulo")
     mylist.append(e)
     return mylist
 

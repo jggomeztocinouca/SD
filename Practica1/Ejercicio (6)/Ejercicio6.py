@@ -2,7 +2,7 @@ def list_del(mylist, e):
     if e is None:
         raise TypeError("El elemento no puede ser nulo")
     if len(mylist) == 0:
-        raise ValueError("La lista no puede ser vacía")
+        raise ValueError("La lista no puede ser vacia")
 
     mylist.remove(e)
     return mylist

@@ -14,11 +14,11 @@ def listarArchivos():
 
 listarArchivos()
 
-opcion = input("¿Desea modificar el nombre de algún fichero? (S/N) ")
+opcion = input("Desea modificar el nombre de algun fichero? (S/N) ")
 if opcion == 'S' or opcion == 's':
     archivoRenombrar = input("Introduzca el nombre del fichero a renombrar: ")
     if type(archivoRenombrar) is not str:
-        print("Error. Nombre de archivo introducido no válido.")
+        print("Error. Nombre de archivo introducido no valido.")
     elif archivoRenombrar is None:
         print("Error. El nombre del archivo no puede ser nulo")
     elif not os.path.isfile(archivoRenombrar):
