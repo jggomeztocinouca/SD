@@ -4,6 +4,7 @@ import requests
 # Dirección del Servidor
 API_URL = 'http://localhost:8080/room'
 
+
 def add_room():
     # Solicitamos los datos de la nueva habitación al usuario
     id = input("Introduzca el id de la habitación: ")
@@ -20,11 +21,13 @@ def add_room():
     # Imprimimos la respuesta de la API
     print('respuesta:', respuesta.json())
 
+
 def list_rooms():
     # Hacemos una solicitud GET a la API para obtener la lista de habitaciones
     respuesta = requests.get(API_URL)
     # Imprimimos la lista de habitaciones
     print('Habitaciones:', respuesta.json())
+
 
 # Función principal que presenta un menú al usuario
 def main():
@@ -44,6 +47,7 @@ def main():
             list_rooms()
         elif opcion == '3':
             break
+
 
 if __name__ == '__main__':
     main()

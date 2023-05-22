@@ -3,25 +3,28 @@ import json
 
 base_url = 'http://localhost:8080'  # URL base del servidor
 
+
 # Registrar un aterrizaje
 def registrar_aterrizaje():
     registro = input('Introduce la matrícula del avión: ')
-    hora_aterrizaje = input('Introduce la hora de aterrizaje (formato "YYYY-MM-DDTHH:MM:SS"): ')
+    hora_aterrizaje = input('Introduce la hora de aterrizaje (formato "YYYY-MM-DDHH:MM:SS"): ')
     respuesta = requests.post(f'{base_url}/aterrizaje', json={'registro': registro, 'hora_aterrizaje': hora_aterrizaje})
     if respuesta.status_code == 200:
         print('Aterrizaje registrado. ID del avión:', respuesta.json()['id'])
     else:
         print('Error al registrar el aterrizaje:', respuesta.text)
 
+
 # Registrar un despegue
 def registrar_despegue():
     registro = input('Introduce la matrícula del avión: ')
-    hora_despegue = input('Introduce la hora de despegue (formato "YYYY-MM-DDTHH:MM:SS"): ')
+    hora_despegue = input('Introduce la hora de despegue (formato "YYYY-MM-DDHH:MM:SS"): ')
     respuesta = requests.post(f'{base_url}/despegue', json={'registro': registro, 'hora_despegue': hora_despegue})
     if respuesta.status_code == 200:
         print('Despegue registrado')
     else:
         print('Error al registrar el despegue:', respuesta.text)
+
 
 # Listar todos los aviones del aeropuerto
 def list_aviones():
@@ -32,6 +35,7 @@ def list_aviones():
             print(json.dumps(avion, indent=4))
     else:
         print('Error al listar los aviones:', respuesta.text)
+
 
 while True:
     print('1. Registrar un aterrizaje')

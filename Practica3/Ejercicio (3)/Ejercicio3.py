@@ -1,7 +1,7 @@
 # Importamos los módulos necesarios
 import json
 
-from bottle import route, request, HTTPResponse
+from bottle import route, request, HTTPResponse, run
 
 
 # Definimos una clase Room para representar las habitaciones del hotel
@@ -13,10 +13,12 @@ class Room:
         self.equipamiento = equipamiento
         self.ocupada = ocupada
 
+
 # Función para guardar las habitaciones en un archivo
 def guardar_habitaciones():
     with open('habitaciones.json', 'w') as f:
         json.dump(habitaciones, f)
+
 
 # Función para cargar las habitaciones de un archivo
 def cargar_habitaciones():
@@ -28,8 +30,10 @@ def cargar_habitaciones():
     except FileNotFoundError:
         return {}
 
+
 # Cargamos las habitaciones al iniciar el programa
 habitaciones = cargar_habitaciones()
+
 
 # Definimos el endpoint para añadir una nueva habitación con el método POST
 @route('/room', method='POST')
@@ -47,6 +51,7 @@ def add_room():
     guardar_habitaciones()
     # Devolvemos un mensaje de éxito
     return HTTPResponse(status=200, body=f'Habitación {datos["id"]} creada correctamente')
+
 
 # Definimos el endpoint para modificar una habitación existente con el método PUT
 @route('/room/<id>', method='PUT')
@@ -67,11 +72,13 @@ def modificar_room(id):
     # Devolvemos un mensaje de éxito
     return HTTPResponse(status=200, body=f'Habitación {id} modificada correctamente')
 
+
 # Definimos el endpoint para obtener la lista de todas las habitaciones con el método GET
 @route('/room', method='GET')
 def list_habitaciones():
     # Devolvemos la lista de todas las habitaciones en formato JSON
     return {id: vars(room) for id, room in habitaciones.items()}
+
 
 # Definimos el endpoint para obtener una habitación específica con el método GET
 @route('/room/<id>', method='GET')
@@ -84,6 +91,7 @@ def get_room(id):
     room = habitaciones[id]
     # Devolvemos los datos de la habitación en formato JSON
     return vars(room)
+
 
 # Definimos el endpoint para eliminar una habitación con el método DELETE
 @route('/room/<id>', method='DELETE')
@@ -98,3 +106,6 @@ def delete_room(id):
     guardar_habitaciones()
     # Devolvemos un mensaje de éxito
     return HTTPResponse(status=200, body=f'Habitación {id} eliminada correctamente')
+
+
+run(host='localhost', port=8080)

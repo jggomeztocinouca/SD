@@ -3,6 +3,7 @@ import uuid
 
 from bottle import route, run, request, HTTPResponse
 
+
 def cargar_aviones():
     try:
         with open('aviones.json', 'r') as f:
@@ -10,15 +11,17 @@ def cargar_aviones():
     except FileNotFoundError:
         return {}
 
+
 def guardar_aviones():
     with open('aviones.json', 'w') as f:
         json.dump(aviones, f)
+
 
 # Mantenemos un diccionario en memoria para almacenar la información de los aviones.
 aviones = cargar_aviones()
 
 
-# Función para obtener el número de pista con menor frecuencia de uso
+# Función para obtener el número de pistas con menor frecuencia de uso
 def get_pista():
     pistas = [0, 0]  # Número de usos de las pistas 10 y 30
     for avion in aviones.values():
@@ -31,6 +34,7 @@ def get_pista():
         elif avion['despegue_pista'] == 30:
             pistas[1] += 1
     return 10 if pistas[0] < pistas[1] else 30
+
 
 # Registro de aterrizaje
 @route('/aterrizaje', method='POST')
@@ -48,6 +52,7 @@ def aterrizaje():
     guardar_aviones()
     return aviones[id]
 
+
 # Registro de despegue
 @route('/despegue', method='POST')
 def despegue():
@@ -63,9 +68,11 @@ def despegue():
                 return HTTPResponse(status=400, body='El avión ya ha despegado')
     return HTTPResponse(status=404, body='Avión no encontrado')
 
+
 # Listado de todos los aviones del aeropuerto
 @route('/aviones', method='GET')
 def list_aviones():
     return {'aviones': list(aviones.values())}
+
 
 run(host='localhost', port=8080)

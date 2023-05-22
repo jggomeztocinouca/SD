@@ -3,10 +3,12 @@ import json
 
 base_url = 'http://localhost:8080'  # URL base del servidor
 
+
 # Registramos un nuevo usuario
 def register_user():
     response = requests.post(f'{base_url}/register/user')
     print(f'Usuario registrado: {response.json()}')
+
 
 # Registramos un nuevo vehículo
 def register_vehicle():
@@ -14,6 +16,7 @@ def register_vehicle():
     model = input('Introduce el modelo del vehículo: ')
     response = requests.post(f'{base_url}/register/vehicle', json={'brand': brand, 'model': model})
     print(f'Vehículo registrado: {response.json()}')
+
 
 # Alquilamos un vehículo libre
 def rent_free_vehicle():
@@ -24,6 +27,7 @@ def rent_free_vehicle():
     else:
         print('Error:', response.text)
 
+
 # Alquilamos un vehículo específico
 def rent_specific_vehicle():
     userid = input('Introduce el ID del usuario: ')
@@ -33,6 +37,7 @@ def rent_specific_vehicle():
         print(f'Vehículo alquilado: {response.json()}')
     else:
         print('Error:', response.text)
+
 
 # Menú principal
 while True:

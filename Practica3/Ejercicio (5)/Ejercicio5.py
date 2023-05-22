@@ -10,11 +10,14 @@ def cargar_usuarios():
     except FileNotFoundError:
         return {}
 
+
 def guardar_usuarios():
     with open('usuarios.json', 'w') as f:
         json.dump(usuarios, f)
 
-usuarios =  cargar_usuarios() # Iniciamos el diccionario de usuarios
+
+usuarios = cargar_usuarios()  # Iniciamos el diccionario de usuarios
+
 
 # Definimos el endpoint para el registro de usuarios
 @route('/register', method='POST')
@@ -32,6 +35,7 @@ def register():
     usuarios[nombre_usuario] = usuario  # Agregamos el usuario al diccionario
     guardar_usuarios()
     return usuario  # Devolvemos la información del usuario registrado
+
 
 # Definimos el endpoint para la activación de la cuenta
 @route('/activate', method='POST')
@@ -52,6 +56,7 @@ def activate():
 
     return HTTPResponse(status=404, body='Usuario no encontrado')  # El usuario no se encontró
 
+
 # Definimos el endpoint para la búsqueda de usuarios
 @route('/search', method='POST')
 def search():
@@ -59,7 +64,9 @@ def search():
     busqueda = datos.get('busqueda')  # Obtenemos la cadena de búsqueda
 
     # Buscamos a todos los usuarios que coincidan con la consulta
-    coincidentes_usuarios = [user for user in usuarios.values() if busqueda in user['nombre_usuario'] or busqueda in user['email']]
+    coincidentes_usuarios = [user for user in usuarios.values() if
+                             busqueda in user['nombre_usuario'] or busqueda in user['email']]
     return {'usuarios': coincidentes_usuarios}  # Devolvemos los usuarios que coinciden
+
 
 run(host='localhost', port=8080)
